@@ -91,15 +91,28 @@ export function combinedDecrypt(text: string, settings: CombinedSettings, vernam
 }
 
 export function modPow(base: bigint, exponent: bigint, modulus: bigint): bigint {
+  // Edge case: if modulus is 1, result is always 0
   if (modulus === BigInt(1)) return BigInt(0);
+
+  // Initialize result to 1
   let result = BigInt(1);
+  
+  // Reduce base to its modular equivalent to start with smaller number
   base = base % modulus;
+  
+  // Implementation of Square-and-Multiply algorithm for efficient modular exponentiation
   while (exponent > BigInt(0)) {
+    // If current exponent bit is 1, multiply result with current base
     if (exponent % BigInt(2) === BigInt(1)) {
       result = (result * base) % modulus;
     }
-    exponent = exponent >> BigInt(1); // Equivalent to exponent = exponent / 2
+    
+    // Right shift exponent by 1 (divide by 2)
+    exponent = exponent >> BigInt(1);
+    
+    // Square the base for next iteration
     base = (base * base) % modulus;
   }
+  
   return result;
 }
